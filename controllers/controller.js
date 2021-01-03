@@ -1,87 +1,96 @@
 const Blog=require('../model/models')
 
 exports.getall=async (req,res)=>{
-    
-    // Blog.find()
-    //     .then((data)=>{
-    //         res.status(200).json(data)
-    //     })
-    //     .catch((err)=>{
-    //         if(err) res.status(500).json(err);
-    //     })
-
+  
     let data;
     try{
         data = await Blog.find()
-    }catch (error){
+    }catch(error){
         if(error) return res.status(500).json(error)
     }
+    if(!data){
+        return res.status(404).json({"msg":"no data"})
+    }
     res.status(200).json(data)
-} 
+}
 
-// create a blog
-exports.create=(req,res)=>{
+exports.create = async (req,res)=>{
+
     const newBlog=new Blog({
         title:req.body.title,
         author:req.body.author,
         desc:req.body.desc
     })
     console.log(newBlog)
-    newBlog.save().then((blog)=>{
-        res.status(201).json({"msg":"create","blog":blog})
-    }).catch((err)=>{
-        return res.status(500).json(err)
-    })
+
+    let blog;
+    try{
+        blog =await newBlog.save()
+    }catch(error){
+        if(error) return res.status(500).json(error)
+    }
+    res.status(201).json({"msg":"create","blog":blog})
+    
 } 
 
 // find single blog by id
-exports.getone = (req,res)=>{
-    Blog.findById(req.params.blogId)
-        .then(data=>{
-            if(!data) return res.status(404).json({"msg":"Blog not found"})
-            res.status(200).json(data)
-        })
-        .catch(err=>{
-            if(err) res.status(500).json(err)
-        })
-
+exports.getone =async (req,res)=>{
+    let data;
+    try{
+        data = await Blog.findById(req.params.blogId)
+    }catch(error){
+        if(error) return res.status(500).json(error)
+    }
+    if(!data) return res.status(404).json({"msg":"Blog not found"})
+    res.status(200).json(data)
     // Blog.findOne({author:req.params.author}).then().catch()
 }
 
 // to update a blog
-exports.updateone = (req,res)=>{
+exports.updateone =async (req,res)=>{
     if(!req.body.title || !req.body.desc || !req.body.author)
         return res.status(500).json({"msg":"fill all the blanks"})
-    Blog.findByIdAndUpdate(req.params.blogId,{
-        title:req.body.title,
-        author:req.body.author,
-        desc:req.body.desc
-    },{new:true})
-        .then(data=>{
-            if(!data) return res.status(404).json({"msg":"not found"})
-            res.status(202).json({
+    let data;
+    try{
+        data = await Blog.findByIdAndUpdate(req.params.blogId,{
+            title:req.body.title,
+            author:req.body.author,
+            desc:req.body.desc
+        },{new:true})
+
+    }catch(error){
+        if(error) return res.status(500).json(error)
+    }
+    
+    if(!data) return res.status(404).json({"msg":"not found"})
+    
+    res.status(202).json({
                 "msg":"Updated",
                 "doc":data
-            })
-        })
-        .catch(err=>{
-            if (err) res.status(500).json(err)
-        })
+                })
+        
 }
 
 // to delete a blog
-exports.deleteone = (req,res)=>{
-    Blog.findByIdAndDelete(req.params.blogId).then(data=>{
-        if(!data) return res.status(404).json({"msg":"nor found"})
-        res.status(202).json({
+exports.deleteone =async (req,res)=>{
+    let data
+    try{
+        data = await Blog.findByIdAndDelete(req.params.blogId)
+    }
+    catch(error){
+        if(error) return res.status(500).json(error)
+    }
+    
+    if(!data) return res.status(404).json({"msg":"nor found"})
+    
+    res.status(202).json({
             "msg":"deleted",
             "doc":data
         })
-    }).catch(err=>{
-        if(err) res.status(500).json(err)
-    })
+    
 }
 
+// get blogss by Author
 exports.getByAuthor = async (req,res)=>{
     let data;
     try{
@@ -96,6 +105,8 @@ exports.getByAuthor = async (req,res)=>{
     }
     res.status(200).json(data)
 }
+
+// get a blog by Title
 exports.getByTitle = async (req,res)=>{
     let data;
     try{
@@ -110,6 +121,8 @@ exports.getByTitle = async (req,res)=>{
     }
     res.status(200).json(data)
 }
+
+// get a blog Description
 exports.getByDesc = async (req,res)=>{
     let data;
     try{
