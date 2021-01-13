@@ -15,7 +15,8 @@ exports.getall=async (req,res)=>{
 }
 
 exports.create = async (req,res)=>{
-
+    if(!req.body.title || !req.body.desc || !req.body.author)
+        return res.status(500).json({"msg":"fill all the blanks"})
     const newBlog=new Blog({
         title:req.body.title,
         author:req.body.author,
@@ -23,13 +24,14 @@ exports.create = async (req,res)=>{
     })
     console.log(newBlog)
 
-    let blog;
-    try{
-        blog =await newBlog.save()
-    }catch(error){
-        if(error) return res.status(500).json(error)
-    }
-    res.status(201).json({"msg":"create","blog":blog})
+    
+        let blog;
+        try{
+            blog =await newBlog.save()
+        }catch(error){
+            if(error) return res.status(500).json(error)
+        }
+        res.status(201).json({"msg":"create","blog":blog})
     
 } 
 

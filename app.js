@@ -23,8 +23,8 @@ require('./routers/router')(app)
 app.get('/',(req,res)=>{
     res.json({"mess":"ieluwbvb"})
 })
-app.get('/check',(req,res)=>{
-    res.send('checking')
+app.use('*',(req,res,next)=>{
+    res.status(404).json({"msg":"Not found"})
 })
 
 console.log(process.env.MONGO_URL);
