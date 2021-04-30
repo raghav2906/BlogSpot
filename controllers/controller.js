@@ -15,11 +15,11 @@ exports.getall=async (req,res)=>{
 }
 
 exports.create = async (req,res)=>{
-    if(!req.body.title || !req.body.desc || !req.body.author)
+    if(!req.body.title || !req.body.desc )
         return res.status(500).json({"msg":"fill all the blanks"})
     const newBlog=new Blog({
         title:req.body.title,
-        author:req.body.author,
+        author:req.author.username,
         desc:req.body.desc
     })
     console.log(newBlog)
@@ -50,13 +50,13 @@ exports.getone =async (req,res)=>{
 
 // to update a blog
 exports.updateone =async (req,res)=>{
-    if(!req.body.title || !req.body.desc || !req.body.author)
+    if(!req.body.title || !req.body.desc )
         return res.status(500).json({"msg":"fill all the blanks"})
     let data;
     try{
         data = await Blog.findByIdAndUpdate(req.params.blogId,{
             title:req.body.title,
-            author:req.body.author,
+            author:req.author.username,
             desc:req.body.desc
         },{new:true})
 

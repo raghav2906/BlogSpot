@@ -10,9 +10,9 @@ module.exports=(app)=>{
     app.get('/api/blogdesc/:desc',blog.getByDesc);
     app.get('/api/blogtitle/:title',blog.getByTitle);
 
-    app.post('/api/create',blog.create);
-    app.put('/api/update/:blogId',blog.updateone);
-    app.delete('/api/delete/:blogId',blog.deleteone);
+    app.post('/api/create',requirelogin,blog.create);
+    app.put('/api/update/:blogId',requirelogin,blog.updateone);
+    app.delete('/api/delete/:blogId',requirelogin,blog.deleteone);
 
     app.post('/api/signup',author.create)
     app.post('/api/signin',author.signin)
