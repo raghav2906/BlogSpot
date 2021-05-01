@@ -5,13 +5,13 @@ const jwt = require('jsonwebtoken')
 
 exports.create = async (req,res)=>{
     if(!req.body.username || !req.body.password || !req.body.fullName){
-        return res.status(500).json({"msg":"Fill all the blanks"})
+        return res.status(500).json({"error":"Fill all the blanks"})
     }
     
     try{
         const oldauthor =await  Author.findOne({username: req.body.username})
         if(oldauthor){
-            return res.status(422).json({"msg":"Username is already taken"})
+            return res.status(422).json({"error":"Username is already taken"})
         } 
         const hashedpwd = await bcrypt.hash(req.body.password,12)
         // console.log("HELLO")
@@ -22,7 +22,7 @@ exports.create = async (req,res)=>{
         })
         console.log(newAuthor)
         const author = await newAuthor.save()
-        res.status(201).json({"msg":"created","author":author})
+        res.status(201).json({"msg":"Succesfully Singup","author":author})
     }catch(error){
         if(error) return res.status(500).json(error)
     }
