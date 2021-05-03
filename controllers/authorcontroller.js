@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Author = require('../model/author')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -42,7 +43,7 @@ exports.signin = async (req,res)=>{
         console.log(savedauthor.password)
         const DOMatch = await bcrypt.compare(req.body.password, savedauthor.password)
         if(DOMatch){
-            const token = jwt.sign({_id:savedauthor._id},"raghav")
+            const token = jwt.sign({_id:savedauthor._id},process.env.JWT_SECRET)
             const  {_id,username,fullName} = savedauthor
             res.status(201).json({token,author:{_id,username,fullName}})
         }else{
